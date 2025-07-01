@@ -3,22 +3,33 @@ import pywifi
 from pywifi import const
 import time
 import requests
+from telegram import Bot, ReplyKeyboardMarkup
+import os
 
 app = Flask(__name__)
 
 TOKEN = "7831160199:AAGM0m3EJuy_JWssSZFY6WMjoxChnb48pfA"
 CHAT_ID = "6969597735"
 
-def send_telegram_message(text):
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    data = {
-        "chat_id": CHAT_ID,
-        "text": text
-    }
-    try:
-        requests.post(url, data=data)
-    except:
-        print("⚠️ فشل إرسال الرسالة إلى تيليجرام")
+def send_telegram_message(text, use_buttons=False):
+    if use_buttons:
+        bot = Bot(token=TOKEN)
+        keyboard = [
+            ["📡 بدء التخمين", "📁 تحميل التقارير"],
+            ["🛠 حالة الكرت", "💬 تواصل المطور"]
+        ]
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+        bot.send_message(chat_id=CHAT_ID, text=text, reply_markup=reply_markup)
+    else:
+        url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        data = {
+            "chat_id": CHAT_ID,
+            "text": text
+        }
+        try:
+            requests.post(url, data=data)
+        except:
+            print("⚠️ فشل إرسال الرسالة إلى تيليجرام")
 
 def check_interface():
     wifi = pywifi.PyWiFi()
@@ -72,5 +83,6 @@ def start_attack():
     return log
 
 if __name__ == '__main__':
-    send_telegram_message("✅ تم تشغيل أداة فحص الشبكة بنجاح!\nللتواصل: @vippmsl")
-    app.run(host='0.0.0.0', port=5000)
+    send_telegram_message("✅ تم تشغيل أداة فحص الشبكة بنجاح!\n📡 للتواصل: @vippmsl", use_buttons=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
