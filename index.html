@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>أداة فحص الشبكة</title>
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+      text-align: center;
+      padding: 40px;
+    }
+    input, button {
+      padding: 15px;
+      font-size: 1.2em;
+      border: none;
+      margin: 10px;
+      border-radius: 10px;
+    }
+    input {
+      width: 70%;
+    }
+    button {
+      background-color: #00ffc8;
+      color: black;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #00cc9b;
+    }
+    #log {
+      margin-top: 30px;
+      background-color: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 أداة فحص حماية الشبكة</h1>
+  <p>اكتب اسم الشبكة (SSID):</p>
+  <input type="text" id="ssid" placeholder="مثال: MyWiFiNetwork">
+  <br>
+  <button onclick="startScan()">ابدأ التخمين</button>
+
+  <div id="log"></div>
+
+  <script>
+    function startScan() {
+      const ssid = document.getElementById('ssid').value;
+      const log = document.getElementById('log');
+
+      if (!ssid) {
+        alert("اكتب اسم الشبكة أولاً.");
+        return;
+      }
+
+      fetch('/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ssid: ssid })
+      })
+      .then(res => res.text())
+      .then(data => {
+        log.innerHTML = `<pre>${data}</pre>`;
+      });
+    }
+  </script>
+</body>
+</html>
