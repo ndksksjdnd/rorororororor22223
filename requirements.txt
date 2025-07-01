@@ -1,3 +1,5 @@
 flask
 pywifi
 requests
+
+python-telegram-bot==13.15
